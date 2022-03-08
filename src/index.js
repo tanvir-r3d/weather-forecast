@@ -5,9 +5,13 @@ import Weather from "./Components/Weather";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';
 import 'mdbreact/dist/css/mdb.css';
+import {Provider} from "react-redux";
+import store from "./store";
 
 ReactDOM.render(
-    <Weather/>,
+    <Provider store={store}>
+        <Weather/>
+    </Provider>,
     document.getElementById('root')
 );
 

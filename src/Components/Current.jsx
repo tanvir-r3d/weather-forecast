@@ -1,10 +1,12 @@
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
-import {API, API_KEY} from "../const";
+import {API, API_KEY, FAHRENHEIT} from "../const";
 import {CapitalContext} from "../Context/CapitalContext";
+import {useSelector} from "react-redux";
 
 const Current = () => {
     const {capital} = useContext(CapitalContext);
+    const temperature = useSelector((state) => state.temperature.value);
     const [currentWeather, setCurrentWeather] = useState({
         current: {
             feelslike_c: "",
@@ -12,6 +14,7 @@ const Current = () => {
             temp_c: "",
             condition: {
                 text: "",
+                icon: "",
             }
         },
         location: {
@@ -19,10 +22,14 @@ const Current = () => {
             name: "",
         }
     });
-
+    console.log(temperature)
     const fetchCurrentWeather = async () => {
         const {data} = await axios.get(`${API}/current.json?key=${API_KEY}&q=${capital}`);
         setCurrentWeather({...data});
+    };
+
+    const handleTempChange = (e) => {
+        console.log(e.target.checked);
     };
 
     useEffect(() => {
@@ -46,11 +53,27 @@ const Current = () => {
                                     <div className="mask" style={{backgroundColor: 'rgba(190, 216, 232, .5)'}}/>
                                 </div>
                                 <div className="card-img-overlay text-dark p-5">
-                                    <h4 className="mb-0">{currentWeather.location.name}, {currentWeather.location.country}</h4>
+                                    <h4 className="mb-0">{currentWeather.location.name}, {currentWeather.location.country}
+                                        <img src={currentWeather.current.condition.icon} alt="" style={{width: "15%"}}/>
+                                    </h4>
                                     <p className="display-2 my-3">{currentWeather.current.temp_c} °C</p>
                                     <p className="mb-2">Feels
                                         Like: <strong>{currentWeather.current.feelslike_c} °C</strong></p>
                                     <h5>{currentWeather.current.condition.text}</h5>
+                                    <div className='custom-control custom-switch'>
+                                        <input
+                                            type='checkbox'
+                                            className='custom-control-input'
+                                            id='customSwitchesChecked'
+                                            value={FAHRENHEIT}
+                                            onChange={(e) => {
+                                                handleTempChange(e)
+                                            }}
+                                        />
+                                        <label className='custom-control-label' htmlFor='customSwitchesChecked'>
+                                            Fahrenheit
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
