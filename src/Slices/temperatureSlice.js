@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {CELSIUS, FAHRENHEIT} from "../const";
+import {CELSIUS, FAHRENHEIT} from "../config";
 
 export const temperatureSlice = createSlice({
     name: 'temperature',

@@ -1,17 +1,20 @@
 import React, {useContext, useEffect, useState} from "react";
 import axios from "axios";
-import {API, API_KEY, FAHRENHEIT} from "../const";
+import {API, API_KEY, FAHRENHEIT} from "../config";
 import {CapitalContext} from "../Context/CapitalContext";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
+import {convertCelsius, convertFahrenheit} from "../Slices/temperatureSlice";
 
 const Current = () => {
-    const {capital} = useContext(CapitalContext);
     const temperature = useSelector((state) => state.temperature.value);
+    const temperatureDispatch = useDispatch();
+    const {capital} = useContext(CapitalContext);
     const [currentWeather, setCurrentWeather] = useState({
         current: {
             feelslike_c: "",
             feelslike_f: "",
             temp_c: "",
+            temp_f: "",
             condition: {
                 text: "",
                 icon: "",
@@ -22,14 +25,18 @@ const Current = () => {
             name: "",
         }
     });
-    console.log(temperature)
+
     const fetchCurrentWeather = async () => {
         const {data} = await axios.get(`${API}/current.json?key=${API_KEY}&q=${capital}`);
         setCurrentWeather({...data});
     };
 
     const handleTempChange = (e) => {
-        console.log(e.target.checked);
+        if (e.target.checked) {
+            temperatureDispatch(convertFahrenheit());
+        } else {
+            temperatureDispatch(convertCelsius());
+        }
     };
 
     useEffect(() => {
@@ -56,9 +63,14 @@ const Current = () => {
                                     <h4 className="mb-0">{currentWeather.location.name}, {currentWeather.location.country}
                                         <img src={currentWeather.current.condition.icon} alt="" style={{width: "15%"}}/>
                                     </h4>
-                                    <p className="display-2 my-3">{currentWeather.current.temp_c} °C</p>
+                                    <p className="display-2 my-3">{temperature === FAHRENHEIT ? currentWeather.current.temp_f + " °F" : currentWeather.current.temp_c + " °C"}</p>
                                     <p className="mb-2">Feels
-                                        Like: <strong>{currentWeather.current.feelslike_c} °C</strong></p>
+                                        Like: <strong>{
+                                            temperature === FAHRENHEIT ?
+                                                currentWeather.current.feelslike_f + " °F" :
+                                                currentWeather.current.feelslike_c + " °C"
+                                        }</strong>
+                                    </p>
                                     <h5>{currentWeather.current.condition.text}</h5>
                                     <div className='custom-control custom-switch'>
                                         <input

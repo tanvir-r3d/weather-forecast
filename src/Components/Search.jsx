@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from "react";
 import {MDBCol, MDBInput} from "mdbreact";
 import axios from "axios";
-import {API, API_KEY} from "../const";
+import {API, API_KEY} from "../config";
 import {CapitalContext} from "../Context/CapitalContext";
 import SearchList from "./SearchList";
 
